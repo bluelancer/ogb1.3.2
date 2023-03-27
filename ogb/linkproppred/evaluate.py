@@ -195,10 +195,11 @@ class Evaluator:
             desc += '{' + 'hits@{}\': hits@{}'.format(self.K, self.K) + '}\n'
             desc += '- hits@{} (float): Hits@{} score\n'.format(self.K, self.K)
         elif self.eval_metric == 'mrr':
-            desc += '{' + '\'hits@1_list\': hits@1_list, \'hits@3_list\': hits@3_list, \n\'hits@10_list\': hits@10_list, \'mrr_list\': mrr_list}\n'
+            desc += '{' + '\'hits@1_list\': hits@1_list, \'hits@3_list\': hits@3_list, \'hits@5_list\': hits@5_list, \n\'hits@10_list\': hits@10_list, \'mrr_list\': mrr_list}\n'
             desc += '- mrr_list (list of float): list of scores for calculating MRR \n'
             desc += '- hits@1_list (list of float): list of scores for calculating Hits@1 \n'
             desc += '- hits@3_list (list of float): list of scores to calculating Hits@3\n'
+            desc += '- hits@5_list (list of float): list of scores to calculating Hits@5\n'
             desc += '- hits@10_list (list of float): list of scores to calculating Hits@10\n'
             desc += 'Note: i-th element corresponds to the prediction score for the i-th edge.\n'
             desc += 'Note: To obtain the final score, you need to concatenate the lists of scores and take average over the concatenated list.'
@@ -254,12 +255,14 @@ class Evaluator:
             ranking_list = 0.5 * (optimistic_rank + pessimistic_rank) + 1
             hits1_list = (ranking_list <= 1).to(torch.float)
             hits3_list = (ranking_list <= 3).to(torch.float)
+            hits5_list = (ranking_list <= 5).to(torch.float)
             hits10_list = (ranking_list <= 10).to(torch.float)
             mrr_list = 1./ranking_list.to(torch.float)
 
             return {'hits@1_list': hits1_list,
                      'hits@3_list': hits3_list,
-                     'hits@10_list': hits10_list,
+                     'hits@5_list': hits5_list,
+                    'hits@10_list': hits10_list,
                      'mrr_list': mrr_list}
 
         else:
